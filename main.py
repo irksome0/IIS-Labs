@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 
 
 def get_data():
-    data = pd.read_csv("police_project.csv", low_memory=False)
-    data = pd.DataFrame(data[0:100000])
-    return data
+    new_data = pd.read_csv("police_project.csv", low_memory=False)
+    new_data = pd.DataFrame(new_data)
+    return new_data
 
 
 def filter_data(data_frame):
@@ -40,8 +40,24 @@ def search_quantity(data_frame):
 
 def search_type(data_frame):
     current_data = data_frame[lambda x: x['search_conducted'] == True]
-    current_data['raw_search_vehicle_description'].value_counts().plot(kind="bar", fontsize=10)
+    current_data['raw_search_vehicle_description'].value_counts().plot(kind="bar", fontsize=10, color="darkgreen")
     plt.title("Search types")
+    plt.show()
+
+
+def add_field(data_frame):
+    data_frame['frisk'] = data_frame['search_conducted']
+    data_frame['search_conducted'] = 0
+    data_frame.drop('search_conducted', axis='columns', inplace=True)
+    return data_frame
+
+
+def getYear(x):
+    return x[:4]
+
+
+def graph(data_frame):
+    data_frame['date'].value_counts().plot()
     plt.show()
 
 
@@ -50,3 +66,6 @@ print(filter_data(data))
 print(moving_violation(data))
 search_quantity(data)
 search_type(data)
+data = add_field(data)
+print(data[lambda x: x['frisk'] == True])
+graph(data)
